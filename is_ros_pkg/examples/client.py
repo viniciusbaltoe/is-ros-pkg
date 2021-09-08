@@ -24,6 +24,6 @@ if __name__ == "__main__":
     try:
         reply = channel.consume(timeout=3.0)
         unpacked_msg = reply.unpack(Position)
-        print('RPC Status:', reply.status, '\nReply:', unpacked_msg)
+        print('RPC Status:', reply.status, '\nPosition:\n', unpacked_msg)
     except socket.timeout:
         print('No reply :(')

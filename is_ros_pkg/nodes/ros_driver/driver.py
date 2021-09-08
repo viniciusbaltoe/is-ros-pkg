@@ -23,10 +23,13 @@ class ROS_Robot(object):
     def get_position(self):
         rospy.init_node('get_position', anonymous=True)
         rospy.Subscriber("odom", Odometry, self.callback)
+        while not rospy.is_shutdown():
+            time.sleep(1)
         return self.position
     def callback(self, odom):
         self.position.x = odom.pose.pose.position.x
         self.position.y = odom.pose.pose.position.y
         self.position.z = odom.pose.pose.position.z
+        rospy.signal_shutdown('Get Position Finished.')
 
     #def cell_position(position):

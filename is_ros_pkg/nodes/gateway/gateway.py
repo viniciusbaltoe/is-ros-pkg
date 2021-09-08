@@ -23,7 +23,6 @@ class RobotGateway(object):
         return self.driver.new_task(task)
     
     def get_position(self, bar, ctx):
-        self.logger.info("Eu passei por aqui")
         position = Position()
         get_obj(self.driver.get_position, position)
         return position
