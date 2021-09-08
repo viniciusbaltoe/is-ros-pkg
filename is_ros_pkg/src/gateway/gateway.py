@@ -1,8 +1,8 @@
 from is_wire.core import Channel, Message, Logger, Status, StatusCode
 from is_wire.rpc import ServiceProvider, LogInterceptor
-from is_msgs.robot_pb2 import RobotControllerProgress
-from is_msgs.common_pb2 import FieldSelector
+from is_msgs.robot_pb2 import RobotTaskRequest
 from google.protobuf.empty_pb2 import Empty
+#from is_msgs.common_pb2 import FieldSelector
 import socket
 
 def get_obj(callable, obj):
@@ -19,45 +19,43 @@ class RobotGateway(object):
     def __init__(self, driver):
         self.driver = driver
         self.logger = Logger("RobotGateway")
-    
-    def get_param(self, field_selector, ctx):
-        robot_param = RobotControllerProgress()
-        self.logger.info("Gateway: Requesting parameters to robot driver.")
-        get_obj(self.driver.get_position, robot_param.current_pose)
-        return robot_param
 
-    '''
-    def set_config(self, robot_config, ctx):
-        if robot_config.HasField("speed"):
-            self.driver.set_speed(robot_config.speed)
-        return Empty()
-    ''' 
+    def task_request(self, task, ctx):
+        return self.driver.new_task(task)
+    
+    def get_position(self, ctx):
+        position = Position()
+        get_obj(self.driver.get_position, position)
+        return position
+
+    def call_position(self, position, ctx):
+        maybe_ok = self.driver.call_position(position)
+        if maybe_ok.code != StatusCode.OK:
+            return maybe_ok
+        return Status(StatusCode.OK)
 
     def run(self,broker_uri):
-        service_name = "RobotGazebo.{}".format(self.driver.robot_id)
+        service_name = "ROSRobot.{}".format(self.driver.robot_id)
 
         publish_channel = Channel(broker_uri)
-        
         rpc_channel = Channel(broker_uri)
         server = ServiceProvider(rpc_channel)
-
         logging = LogInterceptor()
         server.add_interceptor(logging)
 
         server.delegate(
-            topic=service_name + ".GetParam",
+            topic=service_name + ".GetPosition",
             request_type=Empty,
-            reply_type=RobotControllerProgress,
-            function=self.get_param)
-        '''
-        server.delegate(
-            topic=service_name + ".SetConfig",
-            request_type=RobotConfig,
-            reply_type=Empty,
-            function=self.set_config)
-        '''
-        self.logger.info("RPC listening for requests")
+            reply_type=Position,
+            function=self.task_request)
 
+        server.delegate(
+            topic=service_name + ".CallPosition",
+            request_type=Position,
+            reply_type=Empty,
+            function=self.task_request)
+        
+        self.logger.info("RPC listening for requests")
         while True:
             try:
                 message = rpc_channel.consume(timeout=0)

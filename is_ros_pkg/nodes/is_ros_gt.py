@@ -6,11 +6,11 @@ from is_msgs.robot_pb2 import RobotControllerProgress
 
 
 def main():
-    config_file = sys.argv[1] if len(sys.argv) > 1 else '../etc/conf/config.json'
+    config_file = sys.argv[1] if len(sys.argv) > 1 else '../../etc/conf/config.json'
     config = json.load(open(config_file, 'r'))
 
     broker_uri = config['broker_uri']
-    robot_config = config['robot']
+    #robot_config = config['robot']
 
     driver = ROS_Robot(robot_config)
 
