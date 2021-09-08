@@ -1,8 +1,7 @@
 from is_wire.core import Channel, Message, Logger, Status, StatusCode
 from is_wire.rpc import ServiceProvider, LogInterceptor
-from is_msgs.robot_pb2 import RobotTaskRequest
 from google.protobuf.empty_pb2 import Empty
-#from is_msgs.common_pb2 import FieldSelector
+from is_msgs.common_pb2 import Position
 import socket
 
 def get_obj(callable, obj):
@@ -23,7 +22,8 @@ class RobotGateway(object):
     def task_request(self, task, ctx):
         return self.driver.new_task(task)
     
-    def get_position(self, ctx):
+    def get_position(self, bar, ctx):
+        self.logger.info("Eu passei por aqui")
         position = Position()
         get_obj(self.driver.get_position, position)
         return position
@@ -47,13 +47,13 @@ class RobotGateway(object):
             topic=service_name + ".GetPosition",
             request_type=Empty,
             reply_type=Position,
-            function=self.task_request)
+            function=self.get_position)
 
         server.delegate(
             topic=service_name + ".CallPosition",
             request_type=Position,
             reply_type=Empty,
-            function=self.task_request)
+            function=self.call_position)
         
         self.logger.info("RPC listening for requests")
         while True:
