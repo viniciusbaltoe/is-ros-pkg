@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from ros_driver.driver import ROS_Robot
 from gateway.gateway import RobotGateway
 from is_msgs.common_pb2 import Position
