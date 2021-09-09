@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>is-rospkg</name>
+  <name>is-ros-pkg</name>
   <version>0.0.0</version>
   <description>The is-ros package</description>
   <maintainer email="viniciusbaltoe@gmail.com">vinicius</maintainer>
