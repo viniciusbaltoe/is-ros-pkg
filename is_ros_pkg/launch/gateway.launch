@@ -1,0 +1,3 @@
+<launch>
+  <node name="is_gateway" pkg="is-ros-pḱg" type="is_ros_gt.py" output="screen"/>
+</launch>
