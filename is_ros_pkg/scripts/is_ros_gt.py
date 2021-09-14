@@ -8,7 +8,7 @@ import sys
 
 def main():
     homedir = os.path.expanduser("~")
-    config_file = sys.argv[1] if len(sys.argv) > 1 else '{}/catkin_ws/src/is-ros-pkg/is_ros_pkg/etc/conf/config.json'.format(homedir)
+    config_file = '{}/catkin_ws/src/is-ros-pkg/is_ros_pkg/etc/conf/config.json'.format(homedir)
     config = json.load(open(config_file, 'r'))
 
     broker_uri = config['broker_uri']
