@@ -4,7 +4,6 @@ from gateway.gateway import RobotGateway
 from is_msgs.common_pb2 import Position
 import os.path
 import json
-import sys
 
 def main():
     homedir = os.path.expanduser("~")
