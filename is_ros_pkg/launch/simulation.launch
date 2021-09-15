@@ -1,0 +1,11 @@
+<launch>
+  <!-- Create de ROBOT on simulation -->
+  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch"/>
+
+  <!-- Start Gateway -->
+  <node name="is_ros_gt" pkg="is-ros-pkg" type="is_ros_gt.py" output="screen"/>
+
+  <!-- Start RVIZ, I'm using turtlebot3 for tests -->
+  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_gazebo_rviz.launch"/> 
+
+</launch>
