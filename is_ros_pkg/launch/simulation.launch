@@ -1,11 +1,31 @@
 <launch>
-  <!-- Create de ROBOT on simulation -->
+
+  <!-- Create de ROBOT on simulation | I'm using turtlebot3 for tests -->
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="$(arg model)"/>
+  </include>
   <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch"/>
+
+  <!-- Start RVIZ -->  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find is-ros-pkg)/etc/rviz/config.rviz"/>
+
+  <!-- Map server -->
+  <arg name="map_file" default="$(find is-ros-pkg)/tests/maps/simulation.yaml"/>
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <node pkg="amcl" type="amcl" name="amcl">
+    <rosparam file="$(find is-ros-pkg)/etc/amcl/config.yaml" command="load"/>
+  </node>
+
+  <!-- move_base -->
+  <arg name="move_forward_only" default="false"/>
+  <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
+    <arg name="model" value="$(arg model)" />
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
 
   <!-- Start Gateway -->
   <node name="is_ros_gt" pkg="is-ros-pkg" type="is_ros_gt.py" output="screen"/>
-
-  <!-- Start RVIZ, I'm using turtlebot3 for tests -->
-  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_gazebo_rviz.launch"/> 
-
 </launch>
