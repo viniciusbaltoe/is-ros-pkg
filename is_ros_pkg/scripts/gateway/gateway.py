@@ -27,8 +27,8 @@ class RobotGateway(object):
         get_obj(self.driver.get_position, position)
         return position
 
-    def call_position(self, position, ctx):
-        maybe_ok = self.driver.call_position(position)
+    def goal_position(self, position, ctx):
+        maybe_ok = self.driver.goal_position(position)
         if maybe_ok.code != StatusCode.OK:
             return maybe_ok
         return Status(StatusCode.OK)
@@ -49,7 +49,7 @@ class RobotGateway(object):
             function=self.get_position)
 
         server.delegate(
-            topic=service_name + ".CallPosition",
+            topic=service_name + ".GoalPosition",
             request_type=Position,
             reply_type=Empty,
             function=self.call_position)
@@ -62,3 +62,4 @@ class RobotGateway(object):
                     server.serve(message)
             except socket.timeout:
                 pass
+        rospy.spin()
