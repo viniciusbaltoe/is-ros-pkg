@@ -52,7 +52,7 @@ class RobotGateway(object):
             topic=service_name + ".GoalPosition",
             request_type=Position,
             reply_type=Empty,
-            function=self.call_position)
+            function=self.goal_position)
         
         self.logger.info("RPC listening for requests")
         while True:
