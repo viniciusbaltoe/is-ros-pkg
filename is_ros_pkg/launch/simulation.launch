@@ -26,6 +26,4 @@
     <arg name="move_forward_only" value="$(arg move_forward_only)"/>
   </include>
 
-  <!-- Start Gateway -->
-  <node name="is_ros_gt" pkg="is-ros-pkg" type="is_ros_gt.py" output="screen"/>
 </launch>
