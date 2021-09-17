@@ -1,30 +1,34 @@
 #!/usr/bin/env python3
 
 import rospy
-from geometry_msgs.msg import PoseStamped
+from move_base_msgs.msg import MoveBaseActionGoal
 
 def talker():
-    goal_publisher = rospy.Publisher('move_base_simple/goal', PoseStamped, queue_size=10)
+    goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10) # 10hz
 
-    goal = PoseStamped()
+    mbag = MoveBaseActionGoal()
 
-    #goal.header.seq = 1
-    #goal.header.stamp = rospy.Time.now()
-    goal.header.frame_id = "map"
+    mbag.goal_id.id = "1"
 
-    goal.pose.position.x = 1.5
-    goal.pose.position.y = -0.5
-    goal.pose.position.z = 0.0
+    #mbag.goal.target_pose.header.seq = 1
+    #mbag.goal.target_pose.header.stamp = rospy.Time.now()
+    mbag.goal.target_pose.header.frame_id = "map"
 
-    #goal.pose.orientation.x = 0.0
-    #goal.pose.orientation.y = 0.0
-    #goal.pose.orientation.z = 0.0
-    goal.pose.orientation.w = 1.0
+    mbag.goal.target_pose.pose.position.x = 1.5
+    mbag.goal.target_pose.pose.position.y = -1.5
+    mbag.goal.target_pose.pose.position.z = 0.0
+
+    #mbag.goal.target_pose.pose.orientation.x = 0.0
+    #mbag.goal.target_pose.pose.orientation.y = 0.0
+    #mbag.goal.target_pose.pose.orientation.z = 0.0
+    mbag.goal.target_pose.pose.orientation.w = 1.0
 
     rospy.sleep(0.1)
-    goal_publisher.publish(goal)
+    goal_publisher.publish(mbag)
+
+    rospy.spin()
 
 if __name__ == '__main__':
     try:
