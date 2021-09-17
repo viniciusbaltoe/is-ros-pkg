@@ -4,8 +4,11 @@ from gateway.gateway import RobotGateway
 from is_msgs.common_pb2 import Position
 import os.path
 import json
+import rospy
 
 def main():
+    rospy.init_node('is_ros_gt_node')
+
     homedir = os.path.expanduser("~")
     config_file = '{}/catkin_ws/src/is-ros-pkg/is_ros_pkg/etc/conf/config.json'.format(homedir)
     config = json.load(open(config_file, 'r'))
