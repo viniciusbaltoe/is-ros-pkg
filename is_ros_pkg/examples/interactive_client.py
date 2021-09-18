@@ -29,20 +29,20 @@ if __name__ == "__main__":
     except socket.timeout:
         print('No reply to Get 1 :(')
 
-    request = Position()
-    request.z = 0.0
+    goal_request = Position()
+    goal_request.z = 0.0
 
     while True:
         # ------------------ Set Goal Position -------------------
         print('Choose a goal position.')
-        request.x = float(input('Position.x : '))
-        request.y = float(input('Position.x : '))
+        goal_request.x = float(input('Position.x : '))
+        goal_request.y = float(input('Position.y : '))
 
         topic = "ROSRobot.{}.GoalPosition".format(robot_config["robot_id"])
         print("Publishing to topic: {}".format(topic))
 
         channel.publish(
-            Message(content=request, reply_to=subscription),
+            Message(content=goal_request, reply_to=subscription),
             topic=topic)
         try:
             reply = channel.consume()
