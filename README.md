@@ -36,7 +36,7 @@ roslaunch is-ros-pkg gateway.launch
 For gateway testing, two examples provided in the repository can be used.
 
 1. [Client](./is_ros_pkg/examples/client.py)
-2. [Interactive Client](./is_ros_pkg/examples/client.py)
+2. [Interactive Client](./is_ros_pkg/examples/interactive_client.py)
 
 To do so, from /examples simply run:
 ```shell
