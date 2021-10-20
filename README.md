@@ -46,6 +46,5 @@ python3 client.py
  - [X] Find ways to communicate IS - ROS.
  - [X] Create a basic robot/ros driver.
  - [X] Build the gateway between the is and the driver.
- - [ ] Use a standart Message from [is-msgs](https://github.com/labviros/is-msgs/tree/master/docs).
  - [X] Document a usage tutorial.
- - [ ] Provide Docker and k8s features.
+ - [ ] Use a standart Message from [is-msgs](https://github.com/labviros/is-msgs/tree/master/docs).
