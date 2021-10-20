@@ -1,4 +1,5 @@
 from is_wire.core import Channel, Message, Logger, Status, StatusCode
+from is_msgs.robot_pb2 import RobotTaskRequest, RobotTaskReply
 from is_wire.rpc import ServiceProvider, LogInterceptor
 from google.protobuf.empty_pb2 import Empty
 from is_msgs.common_pb2 import Position
@@ -18,9 +19,6 @@ class RobotGateway(object):
     def __init__(self, driver):
         self.driver = driver
         self.logger = Logger("RobotGateway")
-
-    def task_request(self, task, ctx):
-        return self.driver.new_task(task)
     
     def get_position(self, bar, ctx):
         position = Position()
@@ -32,6 +30,14 @@ class RobotGateway(object):
         if maybe_ok.code != StatusCode.OK:
             return maybe_ok
         return Status(StatusCode.OK)
+    
+    def robot_task(self, task_request, ctx):
+        task_reply = RobotTaskReply()
+        task_reply.id = task_request.id
+        maybe_ok = self.driver.robot_task_request(task_request)
+        if maybe_ok.code != StatusCode.OK:
+            return maybe_ok
+        return task_reply
 
     def run(self,broker_uri):
         service_name = "ROSRobot.{}".format(self.driver.robot_id)
@@ -53,6 +59,12 @@ class RobotGateway(object):
             request_type=Position,
             reply_type=Empty,
             function=self.goal_position)
+
+        server.delegate(
+            topic=service_name + ".RobotTask",
+            request_type=RobotTaskRequest,
+            reply_type=RobotTaskReply,
+            function=self.robot_task)
         
         self.logger.info("RPC listening for requests")
         while True:
