@@ -1,4 +1,5 @@
+numpy
+
 is-msgs
 is-wire
-numpy
 vine==1.3.0
