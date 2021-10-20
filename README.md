@@ -21,6 +21,10 @@ Clone this repository to your catkin workspace and make it.
 
 ### Prepare environment
 
+Install the requirements:
+```shell
+pip3 install -r requirements.txt
+```
 In order to send/receive messages an amqp broker is necessary, to create one simply run:
 
 ```shell
