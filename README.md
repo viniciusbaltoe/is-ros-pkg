@@ -25,6 +25,13 @@ Install the requirements:
 ```shell
 pip3 install -r requirements.txt
 ```
+This package uses other packages for its functioning, consider installing them to avoid problems.
+```shell
+sudo apt-get install ros-noetic-map-server
+sudo apt-get install ros-noetic-amcl
+sudo apt-get install ros-noetic-move-base
+sudo apt-get install ros-noetic-dwa-local-planner
+```
 In order to send/receive messages an amqp broker is necessary, to create one simply run:
 
 ```shell
