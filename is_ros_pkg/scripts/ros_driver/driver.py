@@ -2,9 +2,10 @@
 import time
 import json
 import math
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 # IS
-from is_wire.core import Logger, Status ,StatusCode, logger
+from is_wire.core import Logger, Status, StatusCode, logger
 from is_msgs.robot_pb2 import RobotTaskRequest, RobotTaskReply 
 from is_msgs.common_pb2 import Position
 
@@ -14,29 +15,6 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Quaternion
 from move_base_msgs.msg import MoveBaseActionGoal
 from actionlib_msgs.msg import GoalStatusArray
-
-
-def euler_from_quaternion(x, y, z, w):
-        t0 = +2.0 * (w * x + y * z)
-        t1 = +1.0 - 2.0 * (x * x + y * y)
-        roll_x = math.atan2(t0, t1)
-
-        t2 = +2.0 * (w * y - z * x)
-        t2 = +1.0 if t2 > +1.0 else t2
-        t2 = -1.0 if t2 < -1.0 else t2
-        pitch_y = math.asin(t2)
-     
-        t3 = +2.0 * (w * z + x * y)
-        t4 = +1.0 - 2.0 * (y * y + z * z)
-        yaw_z = math.atan2(t3, t4)
-        return roll_x, pitch_y, yaw_z
-
-def euler_to_quaternion(yaw, pitch, roll): # Verificar para ver se está correto.
-        qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-        qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
-        qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
-        qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-        return [qx, qy, qz, qw]
 
 class ROS_Robot(object):
     logger = Logger("ROS_Robot")
@@ -55,9 +33,8 @@ class ROS_Robot(object):
         rospy.Subscriber("odom", Odometry, self.get_position_callback)
         while self.function_status is not True:
             time.sleep(1)
-        (roll, pitch, yaw) = euler_from_quaternion(self.robot_orientation_q.x, self.robot_orientation_q.y, self.robot_orientation_q.z, self.robot_orientation_q.w)
-        
-        print((roll, pitch, yaw))
+        (roll, pitch, yaw) = euler_from_quaternion([self.robot_orientation_q.x, self.robot_orientation_q.y, self.robot_orientation_q.z, self.robot_orientation_q.w])
+        self.logger.info("Robot orientation (euler):".format((roll, pitch, yaw)))
         return self.position
     
     def get_position_callback(self, odom):
@@ -95,7 +72,7 @@ class ROS_Robot(object):
             time.sleep(1)
         while self.mbag_status.status_list[0].goal_id.id != str(self.goal_id):
             time.sleep(1) 
-        while self.mbag_status.status_list[0].status is 1:
+        while self.mbag_status.status_list[0].status == 1:
             time.sleep(1)
         
         return Status(StatusCode.OK)
@@ -107,7 +84,6 @@ class ROS_Robot(object):
         goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10)
         mbag = MoveBaseActionGoal()
 
-        
         self.goal_id = self.goal_id +1
         mbag.goal_id.id = str(self.goal_id)
 
@@ -119,10 +95,16 @@ class ROS_Robot(object):
         mbag.goal.target_pose.pose.position.y = task_request.basic_move_task.positions[0].y
         mbag.goal.target_pose.pose.position.z = task_request.basic_move_task.positions[0].z
 
-        #mbag.goal.target_pose.pose.orientation.x = 0.0
-        #mbag.goal.target_pose.pose.orientation.y = 0.0
-        #mbag.goal.target_pose.pose.orientation.z = 0.0
-        mbag.goal.target_pose.pose.orientation.w = 1.0
+
+        yaw = task_request.basic_move_task.final_orientation.yaw
+        pitch = task_request.basic_move_task.final_orientation.pitch        
+        roll = task_request.basic_move_task.final_orientation.roll
+        robot_orientation_q = quaternion_from_euler(roll, pitch, yaw, 'sxyz')
+
+        mbag.goal.target_pose.pose.orientation.x = robot_orientation_q[0]
+        mbag.goal.target_pose.pose.orientation.y = robot_orientation_q[1]
+        mbag.goal.target_pose.pose.orientation.z = robot_orientation_q[2]
+        mbag.goal.target_pose.pose.orientation.w = robot_orientation_q[3]
 
         rospy.sleep(1) # This delay is necessary.
         goal_publisher.publish(mbag)
@@ -131,7 +113,7 @@ class ROS_Robot(object):
             time.sleep(1)
         while self.mbag_status.status_list[0].goal_id.id != str(self.goal_id):
             time.sleep(1) 
-        while self.mbag_status.status_list[0].status is 1:
+        while self.mbag_status.status_list[0].status == 1:
             time.sleep(1)
         
         return Status(StatusCode.OK)
