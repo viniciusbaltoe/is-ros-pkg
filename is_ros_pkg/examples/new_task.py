@@ -36,6 +36,9 @@ if __name__ == "__main__":
     request = RobotTaskRequest()
     request.id = 10
     request.basic_move_task.positions.extend([Position(x=1.5, y=1.5, z=0)])
+    request.basic_move_task.final_orientation.yaw = 6.0
+    request.basic_move_task.final_orientation.pitch = 1.0
+    request.basic_move_task.final_orientation.roll = 0.0
     request.basic_move_task.allowed_error = 0.1
     request.basic_move_task.rate = 1 # It doesn't matter here.
 
