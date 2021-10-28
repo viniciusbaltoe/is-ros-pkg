@@ -36,7 +36,7 @@ class ROS_Robot(object):
         while self.function_status is not True:
             time.sleep(1)
         (roll, pitch, yaw) = euler_from_quaternion([self.robot_orientation_q.x, self.robot_orientation_q.y, self.robot_orientation_q.z, self.robot_orientation_q.w])
-        self.logger.info("Robot orientation (euler):".format((roll, pitch, yaw)))
+        self.logger.info("Robot orientation (roll, pitch, yaw):  \n({}, {}, {})".format(roll, pitch, yaw))
         return self.position
     
     def get_position_callback(self, odom):
