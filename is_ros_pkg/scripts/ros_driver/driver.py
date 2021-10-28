@@ -15,6 +15,8 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Quaternion
 from move_base_msgs.msg import MoveBaseActionGoal
 from actionlib_msgs.msg import GoalStatusArray
+from dynamic_reconfigure.srv import Reconfigure
+from dynamic_reconfigure.msg import Config, BoolParameter
 
 class ROS_Robot(object):
     logger = Logger("ROS_Robot")
@@ -81,6 +83,7 @@ class ROS_Robot(object):
         self.mbag_status = status        
 
     def robot_task_request(self, task_request):
+        self.set_allowed_error(task_request.basic_move_task.allowed_error)
         goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10)
         mbag = MoveBaseActionGoal()
 
@@ -94,7 +97,6 @@ class ROS_Robot(object):
         mbag.goal.target_pose.pose.position.x = task_request.basic_move_task.positions[0].x
         mbag.goal.target_pose.pose.position.y = task_request.basic_move_task.positions[0].y
         mbag.goal.target_pose.pose.position.z = task_request.basic_move_task.positions[0].z
-
 
         yaw = task_request.basic_move_task.final_orientation.yaw
         pitch = task_request.basic_move_task.final_orientation.pitch        
@@ -117,3 +119,16 @@ class ROS_Robot(object):
             time.sleep(1)
         
         return Status(StatusCode.OK)
+
+    def set_allowed_error(self, allowed_error):
+        rospy.wait_for_service('move_base/DWAPlannerROS/set_parameters')
+        try:
+            xy_goal_tolerance = rospy.ServiceProxy('move_base/DWAPlannerROS/set_parameters', Reconfigure)
+            changes = Config()
+            bool_p = BoolParameter()
+            bool_p.name = 'xy_goal_tolerance'
+            bool_p.value = allowed_error
+            changes.doubles = [bool_p]
+            service_call = xy_goal_tolerance(changes)
+        except rospy.ServiceException as e:
+            logger.error("Service call failed: {} \nThe change on /move_base topic to allow the allowed_error select failed.", e)
