@@ -53,18 +53,12 @@ class ROS_Robot(object):
         self.goal_id = self.goal_id +1
         mbag.goal_id.id = str(self.goal_id)
 
-        #mbag.goal.target_pose.header.seq = 1
-        #mbag.goal.target_pose.header.stamp = rospy.Time.now()
         mbag.goal.target_pose.header.frame_id = "map"
 
         mbag.goal.target_pose.pose.position.x = position.x
         mbag.goal.target_pose.pose.position.y = position.y
         mbag.goal.target_pose.pose.position.z = position.z
-
-        #mbag.goal.target_pose.pose.orientation.x = 0.0
-        #mbag.goal.target_pose.pose.orientation.y = 0.0
-        #mbag.goal.target_pose.pose.orientation.z = 0.0
-        mbag.goal.target_pose.pose.orientation.w = -1.0
+        mbag.goal.target_pose.pose.orientation.w = 1.0
 
         rospy.sleep(1) # This delay is necessary.
         goal_publisher.publish(mbag)
@@ -90,8 +84,6 @@ class ROS_Robot(object):
         self.goal_id = self.goal_id +1
         mbag.goal_id.id = str(self.goal_id)
 
-        #mbag.goal.target_pose.header.seq = 1
-        #mbag.goal.target_pose.header.stamp = rospy.Time.now()
         mbag.goal.target_pose.header.frame_id = "map"
 
         mbag.goal.target_pose.pose.position.x = task_request.basic_move_task.positions[0].x
@@ -117,7 +109,6 @@ class ROS_Robot(object):
             time.sleep(1) 
         while self.mbag_status.status_list[0].status == 1:
             time.sleep(1)
-        
         return Status(StatusCode.OK)
 
     def set_allowed_error(self, allowed_error):
