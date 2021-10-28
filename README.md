@@ -49,20 +49,14 @@ roslaunch is-ros-pkg gateway.launch
 ```
 
 ### Examples
-For gateway testing, two examples provided in the repository can be used.
+For gateway testing, three examples provided in the repository can be used.
 
 1. [Client](./is_ros_pkg/examples/client.py)
 2. [Interactive Client](./is_ros_pkg/examples/interactive_client.py)
+3. [New task](./is_ros_pkg/examples/new_task.py) - It uses the standard Message from is-msgs.
 
 To do so, from /examples simply run:
 
 ```shell
 python3 client.py
 ```
-
-## To-Do List
- - [X] Find ways to communicate IS - ROS.
- - [X] Create a basic robot/ros driver.
- - [X] Build the gateway between the is and the driver.
- - [X] Document a usage tutorial.
- - [ ] Use a standart Message from [is-msgs](https://github.com/labviros/is-msgs/tree/master/docs).
