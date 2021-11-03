@@ -108,7 +108,7 @@ class ROS_Robot(object):
             mbag.goal.target_pose.pose.orientation.z = robot_orientation_q[2]
             mbag.goal.target_pose.pose.orientation.w = robot_orientation_q[3]
 
-            rospy.sleep(1)
+            rospy.sleep(0.6)
             goal_publisher.publish(mbag)
             rospy.Subscriber("move_base/status", GoalStatusArray, self.status_callback)
             while len(self.mbag_status.status_list) < 1:

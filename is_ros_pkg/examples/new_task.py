@@ -38,8 +38,7 @@ if __name__ == "__main__":
     request.basic_move_task.positions.extend([Position(x=1.5, y=1.5, z=0)])
     request.basic_move_task.positions.extend([Position(x=-1.5, y=1.5, z=0)])
     request.basic_move_task.positions.extend([Position(x=-1.5, y=-1.5, z=0)])
-    #request.basic_move_task.positions.extend([Position(x=1.5, y=-1.5, z=0)])
-    print(request.basic_move_task.positions)
+    request.basic_move_task.positions.extend([Position(x=1.5, y=-1.5, z=0)])
 
     request.basic_move_task.final_orientation.yaw = 0.0
     request.basic_move_task.final_orientation.pitch = 0.0
