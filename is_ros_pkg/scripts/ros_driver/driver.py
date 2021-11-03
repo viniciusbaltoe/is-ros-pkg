@@ -36,6 +36,7 @@ class ROS_Robot(object):
         while self.function_status is not True:
             time.sleep(1)
         (roll, pitch, yaw) = euler_from_quaternion([self.robot_orientation_q.x, self.robot_orientation_q.y, self.robot_orientation_q.z, self.robot_orientation_q.w])
+        self.logger.info("Getting position.")
         self.logger.info("Robot orientation (roll, pitch, yaw):  \n({}, {}, {})".format(roll, pitch, yaw))
         return self.position
     
@@ -86,6 +87,7 @@ class ROS_Robot(object):
 
         mbag.goal.target_pose.header.frame_id = "map"
 
+        self.logger.info("New goal (x, y, z):  ({}, {}, {})".format(task_request.basic_move_task.positions[0].x, task_request.basic_move_task.positions[0].y, task_request.basic_move_task.positions[0].z))
         mbag.goal.target_pose.pose.position.x = task_request.basic_move_task.positions[0].x
         mbag.goal.target_pose.pose.position.y = task_request.basic_move_task.positions[0].y
         mbag.goal.target_pose.pose.position.z = task_request.basic_move_task.positions[0].z
@@ -100,7 +102,7 @@ class ROS_Robot(object):
         mbag.goal.target_pose.pose.orientation.z = robot_orientation_q[2]
         mbag.goal.target_pose.pose.orientation.w = robot_orientation_q[3]
 
-        rospy.sleep(1) # This delay is necessary.
+        rospy.sleep(1)
         goal_publisher.publish(mbag)
         rospy.Subscriber("move_base/status", GoalStatusArray, self.status_callback)
         while len(self.mbag_status.status_list) < 1:
@@ -114,6 +116,7 @@ class ROS_Robot(object):
     def set_allowed_error(self, allowed_error):
         rospy.wait_for_service('move_base/DWAPlannerROS/set_parameters')
         try:
+            self.logger.info("Changing goal position tolerance to {}".format(allowed_error))
             xy_goal_tolerance = rospy.ServiceProxy('move_base/DWAPlannerROS/set_parameters', Reconfigure)
             changes = Config()
             bool_p = BoolParameter()
