@@ -9,7 +9,7 @@ The simple application elaborated serves as an example for discussing the subjec
 
 ## How it works
 
-The ROS package contains the is-wire-py and is-msgs libraries, that communicate the ROS internal environment with the IS from the IS message exchange structure itself. In this way, the robot remains independent of the IS, as it can continue operating in its absence, and once connected to the IS, the robot can receive stimulus from outside of it, working similarly as a service (with only one container) of the Intelligent Space.
+The ROS package contains the [is-wire-py](https://github.com/labviros/is-wire-py) and [is-msgs](https://github.com/labviros/is-msgs) libraries, that communicate the ROS internal environment with the IS from the IS message exchange structure itself. In this way, the robot remains independent of the IS, as it can continue operating in its absence, and once connected to the IS, the robot can receive stimulus from outside of it, working similarly as a service (with only one container) of the Intelligent Space.
 
 ### Schematic
 
@@ -30,12 +30,9 @@ pip3 install -r requirements.txt
 This package uses other packages for its functioning, consider installing them to avoid problems.
 
 ```shell
-sudo apt-get install ros-noetic-map-server
-sudo apt-get install ros-noetic-amcl
-sudo apt-get install ros-noetic-move-base
-sudo apt-get install ros-noetic-dwa-local-planner
-
+sudo apt-get install -y ros-noetic-map-server ros-noetic-amcl ros-noetic-move-base ros-noetic-dwa-local-planner
 ```
+
 In order to send/receive messages an amqp broker is necessary, to create one simply run:
 
 ```shell
