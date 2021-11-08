@@ -48,7 +48,7 @@ class ROS_Robot(object):
         self.function_status = True
 
     def goal_position(self, position):
-        goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10)
+        goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10, latch=True)
         mbag = MoveBaseActionGoal()
 
         self.goal_id = self.goal_id +1
@@ -61,9 +61,7 @@ class ROS_Robot(object):
         mbag.goal.target_pose.pose.position.z = position.z
         mbag.goal.target_pose.pose.orientation.w = 1.0
 
-        rospy.sleep(1) # This delay is necessary.
         goal_publisher.publish(mbag)
-        #rospy.sleep(1)
         rospy.Subscriber("move_base/status", GoalStatusArray, self.status_callback)
         while len(self.mbag_status.status_list) < 1:
             time.sleep(1)
@@ -79,7 +77,7 @@ class ROS_Robot(object):
 
     def robot_task_request(self, task_request):
         self.set_position_allowed_error(task_request.basic_move_task.allowed_error)
-        goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10)
+        goal_publisher = rospy.Publisher('move_base/goal', MoveBaseActionGoal, queue_size=10, latch=True)
         mbag = MoveBaseActionGoal()
 
         self.set_orientation_allowed_error(10)
@@ -108,7 +106,6 @@ class ROS_Robot(object):
             mbag.goal.target_pose.pose.orientation.z = robot_orientation_q[2]
             mbag.goal.target_pose.pose.orientation.w = robot_orientation_q[3]
 
-            rospy.sleep(0.6)
             goal_publisher.publish(mbag)
             rospy.Subscriber("move_base/status", GoalStatusArray, self.status_callback)
             while len(self.mbag_status.status_list) < 1:
