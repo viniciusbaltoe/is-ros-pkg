@@ -3,7 +3,7 @@ ROS package that contains Codes for integration between Intelligent Spaces (from
 
 ## Status
 
-The codes made so far serve only to read the actual position of a robot and send to it a different position/destiny.
+The codes made so far only serve to read the real position of a robot and send it a list of the different positions or destinations to go.
 
 The simple application elaborated serves as an example for discussing the subject in project meetings.
 
