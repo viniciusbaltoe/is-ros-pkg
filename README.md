@@ -3,10 +3,9 @@ ROS package that contains Codes for integration between Intelligent Spaces (from
 
 ## Status
 
-The codes made so far only serve to read the real position of a robot and send it a list of the different positions or destinations to go.
-
-The simple application elaborated serves as an example for discussing the subject in project meetings.
-
+![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `It is no longer in progress.`
+ 
+The project was redirected towards creating a service for intelligent spaces capable of translating is-msgs messages to ROS messages and vice versa.
 ## How it works
 
 The ROS package contains the [is-wire-py](https://github.com/labviros/is-wire-py) and [is-msgs](https://github.com/labviros/is-msgs) libraries, that communicate the ROS internal environment with the IS from the IS message exchange structure itself. In this way, the robot remains independent of the IS, as it can continue operating in its absence, and once connected to the IS, the robot can receive stimulus from outside of it, working similarly as a service (with only one container) of the Intelligent Space.
